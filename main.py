@@ -70,13 +70,15 @@ def blink():
 
 def asyncout():
     global outon, outs1, outs2
-    #while True:
-    if outon == 1:
-        dummy = 1
-        lcd.move_to(0, 0)
-        lcd.putstr(outs1)
-        lcd.move_to(0, 1)
-        lcd.putstr(outs2)
+    lo1 = outs1
+    lo2 = outs2
+    while True:
+        if outon == 1:
+            dummy = 1
+            lcd.move_to(0, 0)
+            lcd.putstr(outs1)
+            lcd.move_to(0, 1)
+            lcd.putstr(outs2)
 
 
 
@@ -86,7 +88,8 @@ def timerclick(value):
 
 timer = Timer(period=100, mode=Timer.PERIODIC, callback=timerclick)
 # funktioniert im Emulator nicht. Mal auf echtem Pico testen
-_thread.start_new_thread(blink, ())
+#_thread.start_new_thread(blink, ())
+_thread.start_new_thread(asyncout, ())
 
 def timer2str(timer):
     neg = 0
@@ -131,7 +134,7 @@ while True:
         #lcd.move_to(0, 1)
         #lcd.putstr(outs2)
         outon = 1 
-        asyncout()
+        #asyncout()
     if moderun == 2:
         outon = 0 # mode 2 kümmert sich selbst um den LCD
         if mode2sub == 0:
@@ -171,10 +174,10 @@ while True:
         #lcd.move_to(0, 1)
         #lcd.putstr(outs2)
         outon = 1
-        asyncout()
+        #asyncout()
     #lcd.putstr(str(btn1.value()) + " " + str(btn2.value()) + " " + str(btn3.value()) + " " + str(btn4.value()))
     # mindestens 2 hunderstel müssen zwischen den Tastendrücken liegen zum entprellen.
-    if timecount - timebtn > 1:
+    if timecount - timebtn > 2:
         if btn2.value() == 0:
             timebtn = timecount
             lcd.clear()
