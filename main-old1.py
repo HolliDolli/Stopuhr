@@ -18,8 +18,8 @@ led_onboard = Pin(25, Pin.OUT)
 # Initialisierung: Button an GPIO
 btn1 = Pin(9, Pin.IN, Pin.PULL_UP)
 btn2 = Pin(22, Pin.IN, Pin.PULL_UP)
-btn3 = Pin(17, Pin.IN, Pin.PULL_UP)
-btn4 = Pin(14, Pin.IN, Pin.PULL_UP)
+btn3 = Pin(14, Pin.IN, Pin.PULL_UP)
+btn4 = Pin(17, Pin.IN, Pin.PULL_UP)
 
 inppos = [0, 1, 3, 4, 6]
 incre = [6000, 600, 100, 10, 1]
@@ -45,7 +45,6 @@ cdges = 0
 cdpos = 0
 
 outon = 0
-outactive = 0
 outs1 = ""
 outs2 = ""
 
@@ -70,28 +69,17 @@ def blink():
         sleep_ms(999)
 
 def asyncout():
-    global outon, outactive, outs1, outs2
+    global outon, outs1, outs2
+    lo1 = outs1
+    lo2 = outs2
     while True:
         if outon == 1:
-            outactive = 1 
-            lo1 = outs1
-            lo2 = outs2
+            dummy = 1
             lcd.move_to(0, 0)
-            lcd.putstr(lo1)
+            lcd.putstr(outs1)
             lcd.move_to(0, 1)
-            lcd.putstr(lo2)
-            outactive = 0
-        else:
-            outactive = 0
+            lcd.putstr(outs2)
 
-
-def waitasync():
-    global outon, outactive
-    led_onboard.on()
-    outon = 0 # das sollte eigentlich der rufende machen, wir machen es zur sicherheit nochmal, damit es keinen deadlock geben kann.
-    while outactive == 1:
-        dummy = 1
-    led_onboard.off()
 
 
 def timerclick(value):
@@ -130,7 +118,6 @@ while True:
     print (timecount)
     if moderun == 0:
         outon = 0 # mode 0 kümmert sich selbst um den LCD
-        waitasync()
         lcd.move_to(0, 0)
         if modenext == 1:
             lcd.putstr("Stopuhr")
@@ -150,7 +137,6 @@ while True:
         #asyncout()
     if moderun == 2:
         outon = 0 # mode 2 kümmert sich selbst um den LCD
-        waitasync()
         if mode2sub == 0:
             lcd.move_to(0, 0)
             lcd.putstr("Anzahl timer")
@@ -163,7 +149,6 @@ while True:
             lcd.putstr("^")
     if moderun == 3:
         outon = 0 # mode 3 kümmert sich selbst um den LCD
-        waitasync()
         if mode2sub == 0:
             lcd.move_to(0, 0)
             lcd.putstr("Immer zweimal   ")
